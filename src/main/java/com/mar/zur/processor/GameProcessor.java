@@ -91,19 +91,22 @@ public class GameProcessor {
             } else {
                 MessageSolvingResponse solvingResponse = optSolvingResponse.get();
                 executePostTurnActions(solvingResponse);
-
-                if (isOneLifeLeft()) {
-                    buyItem(HPOT_ID, HPOT_PRICE);
-                } else {
-                    if (isRequiredOfBetterItems()) {
-                        buyItemToLevelUp(BETTER_ITEMS_COST);
-                    }
-                    if (isRequiredOfItems()) {
-                        buyItemToLevelUp(SIMPLE_ITEMS_COST);
-                    }
-                }
+                enterTheShop();
             }
             recursiveSolving(picker);
+        }
+    }
+
+    private void enterTheShop() {
+        if (isOneLifeLeft()) {
+            buyItem(HPOT_ID, HPOT_PRICE);
+        } else {
+            if (isRequiredOfBetterItems()) {
+                buyItemToLevelUp(BETTER_ITEMS_COST);
+            }
+            if (isRequiredOfItems()) {
+                buyItemToLevelUp(SIMPLE_ITEMS_COST);
+            }
         }
     }
 
