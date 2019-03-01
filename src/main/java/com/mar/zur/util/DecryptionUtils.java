@@ -3,9 +3,9 @@ package com.mar.zur.util;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
-public class EncryptionUtils {
+public class DecryptionUtils {
 
-    private EncryptionUtils() {
+    private DecryptionUtils() {
     }
 
     public static String decryptStringBase64(String value) {

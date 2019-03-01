@@ -1,7 +1,7 @@
 package com.mar.zur.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mar.zur.util.EncryptionUtils;
+import com.mar.zur.util.DecryptionUtils;
 
 import java.util.Objects;
 
@@ -73,9 +73,9 @@ public class Message {
 
     public String getDecryptedAdId() {
         if (encrypted == 1) {
-            return EncryptionUtils.decryptStringBase64(adId);
+            return DecryptionUtils.decryptStringBase64(adId);
         } else if (encrypted == 2) {
-            return EncryptionUtils.decryptStringROT13(adId);
+            return DecryptionUtils.decryptStringROT13(adId);
         }
         return adId;
     }
