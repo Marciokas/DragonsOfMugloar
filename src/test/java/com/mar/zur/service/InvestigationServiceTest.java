@@ -2,6 +2,7 @@ package com.mar.zur.service;
 
 import com.mar.zur.model.InvestigationResponse;
 import com.mar.zur.model.URLConstants;
+import com.mar.zur.service.impl.InvestigationServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +23,7 @@ public class InvestigationServiceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private InvestigationService investigationService;
+    private InvestigationServiceImpl investigationService;
 
     @Test
     public void investigateReputation() {

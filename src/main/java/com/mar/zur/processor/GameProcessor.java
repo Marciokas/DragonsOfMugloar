@@ -23,7 +23,7 @@ public class GameProcessor {
     private static final Logger logger = LoggerFactory.getLogger(GameProcessor.class);
     private static final String HPOT_ID = "hpot";
     private static final int HPOT_PRICE = 50;
-    private static final int GAMES_COUNT = 15;
+    private static final int GAMES_COUNT = 5;
     private static final int NEED_BETTER_ITEMS_SCORE_RANGE = 1500;
     private static final int NEED_ITEMS_SCORE_RANGE = 1000;
     private static final int BETTER_ITEMS_COST = 300;

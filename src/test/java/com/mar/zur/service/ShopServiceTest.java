@@ -3,6 +3,7 @@ package com.mar.zur.service;
 import com.mar.zur.model.ShopItem;
 import com.mar.zur.model.ShopItemResponse;
 import com.mar.zur.model.URLConstants;
+import com.mar.zur.service.impl.ShopServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,7 @@ public class ShopServiceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private ShopService shopService;
+    private ShopServiceImpl shopService;
 
     @Test
     public void getAllItems() {

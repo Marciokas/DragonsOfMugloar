@@ -3,6 +3,7 @@ package com.mar.zur.service;
 import com.mar.zur.model.Message;
 import com.mar.zur.model.MessageSolvingResponse;
 import com.mar.zur.model.URLConstants;
+import com.mar.zur.service.impl.MessagesServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,7 @@ public class MessagesServiceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private MessagesService messagesService;
+    private MessagesServiceImpl messagesService;
 
     @Test
     public void getAllMessages() {

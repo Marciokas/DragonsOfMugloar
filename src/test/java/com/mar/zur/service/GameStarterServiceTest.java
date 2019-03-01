@@ -2,12 +2,15 @@ package com.mar.zur.service;
 
 import com.mar.zur.model.GameState;
 import com.mar.zur.model.URLConstants;
+import com.mar.zur.service.impl.GameStarterServiceImpl;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +25,12 @@ public class GameStarterServiceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private GameStarterService gameStarterService;
+    private GameStarterServiceImpl gameStarterService;
+
+    @Before
+    public void before() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void getNewGameState() {
