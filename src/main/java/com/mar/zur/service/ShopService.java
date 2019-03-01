@@ -2,7 +2,6 @@ package com.mar.zur.service;
 
 import com.mar.zur.model.ShopItem;
 import com.mar.zur.model.ShopItemResponse;
-import com.mar.zur.model.Message;
 import com.mar.zur.model.URLConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

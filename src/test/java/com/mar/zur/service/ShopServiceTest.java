@@ -14,12 +14,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ShopServiceTest {
+    private static final String GAME_ID = "gameId";
+    private static final String ITEM_ID = "itemId";
 
     @Mock
     private RestTemplate restTemplate;
@@ -33,10 +36,10 @@ public class ShopServiceTest {
         List<ShopItem> shopItems = new ArrayList<>();
         shopItems.add(shopItem);
 
-        Mockito.when(restTemplate.getForObject(URLConstants.SHOP_ITEMS_LIST_URL, ShopItem[].class, "gameId"))
+        Mockito.when(restTemplate.getForObject(URLConstants.SHOP_ITEMS_LIST_URL, ShopItem[].class, GAME_ID))
                 .thenReturn(new ShopItem[]{shopItem});
-        List<ShopItem> serviceResult = shopService.getAllItems("gameId");
 
+        List<ShopItem> serviceResult = shopService.getAllItems(GAME_ID);
         Assert.assertEquals(shopItems.get(0), serviceResult.get(0));
     }
 
@@ -47,8 +50,13 @@ public class ShopServiceTest {
         Mockito.when(restTemplate.postForObject(eq(URLConstants.BUY_ITEM_URL), any(), eq(ShopItemResponse.class), anyMap()))
                 .thenReturn(shopItemResponse);
 
-        ShopItemResponse serviceResult = shopService.buyItem("itemId", "gameId").get();
-        Assert.assertEquals(shopItemResponse, serviceResult);
+        Optional<ShopItemResponse> optServiceResult = shopService.buyItem(ITEM_ID, GAME_ID);
+        if (optServiceResult.isPresent()) {
+            ShopItemResponse serviceResult = optServiceResult.get();
+            Assert.assertEquals(shopItemResponse, serviceResult);
+        } else {
+            throw new NullPointerException("Shop service returned null!");
+        }
     }
 
 }

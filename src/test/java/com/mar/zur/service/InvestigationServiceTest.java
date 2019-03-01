@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,7 +30,13 @@ public class InvestigationServiceTest {
 
         Mockito.when(restTemplate.postForObject(URLConstants.INVESTIGATION_URL, null, InvestigationResponse.class, "test"))
                 .thenReturn(investigationResponse);
-        InvestigationResponse serviceResult = investigationService.investigateReputation("test").get();
-        Assert.assertEquals(investigationResponse, serviceResult);
+
+        Optional<InvestigationResponse> optServiceResult = investigationService.investigateReputation("test");
+        if (optServiceResult.isPresent()) {
+            InvestigationResponse serviceResult = optServiceResult.get();
+            Assert.assertEquals(investigationResponse, serviceResult);
+        } else {
+            throw new NullPointerException("Investigation service returned null!");
+        }
     }
 }

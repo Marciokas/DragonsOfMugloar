@@ -72,10 +72,12 @@ public class Message {
     }
 
     public String getDecryptedAdId() {
-        if (encrypted > 1) {
-            System.out.println("Figure out what kind of encryption is used!");
+        if (encrypted == 1) {
+            return EncryptionUtils.decryptStringBase64(adId);
+        } else if (encrypted == 2) {
+            return EncryptionUtils.decryptStringROT13(adId);
         }
-        return encrypted == 0 ? adId : EncryptionUtils.decryptStringBase64(adId);
+        return adId;
     }
 
     @Override

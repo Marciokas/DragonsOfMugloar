@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,8 +30,14 @@ public class GameStarterServiceTest {
 
         Mockito.when(restTemplate.postForObject(URLConstants.GAME_STARTER_URL, null, GameState.class))
                 .thenReturn(gameState);
-        GameState serviceResult = gameStarterService.getNewGameState().get();
-        Assert.assertEquals(gameState, serviceResult);
+
+        Optional<GameState> optServiceResult = gameStarterService.getNewGameState();
+        if (optServiceResult.isPresent()) {
+            GameState serviceResult = optServiceResult.get();
+            Assert.assertEquals(gameState, serviceResult);
+        } else {
+            throw new NullPointerException("Game starter service returned null!");
+        }
     }
 
 }

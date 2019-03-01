@@ -14,12 +14,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesServiceTest {
+    private static final String GAME_ID = "gameId";
+    private static final String AD_ID = "adId";
 
     @Mock
     private RestTemplate restTemplate;
@@ -33,10 +36,10 @@ public class MessagesServiceTest {
         List<Message> messages = new ArrayList<>();
         messages.add(message);
 
-        Mockito.when(restTemplate.getForObject(URLConstants.GET_ALL_MESSAGES_URL, Message[].class, "gameId"))
+        Mockito.when(restTemplate.getForObject(URLConstants.GET_ALL_MESSAGES_URL, Message[].class, GAME_ID))
                 .thenReturn(new Message[]{message});
-        List<Message> serviceResult = messagesService.getAllMessages("gameId");
 
+        List<Message> serviceResult = messagesService.getAllMessages(GAME_ID);
         Assert.assertEquals(messages.get(0), serviceResult.get(0));
     }
 
@@ -47,8 +50,13 @@ public class MessagesServiceTest {
         Mockito.when(restTemplate.postForObject(eq(URLConstants.SOLVE_MESSAGE_URL), any(), eq(MessageSolvingResponse.class), anyMap()))
                 .thenReturn(solvingResponse);
 
-        MessageSolvingResponse serviceResult = messagesService.postSolveMessage("adId", "gameId").get();
-        Assert.assertEquals(solvingResponse, serviceResult);
+        Optional<MessageSolvingResponse> optServiceResult = messagesService.postSolveMessage(AD_ID, GAME_ID);
+        if (optServiceResult.isPresent()) {
+            MessageSolvingResponse serviceResult = optServiceResult.get();
+            Assert.assertEquals(solvingResponse, serviceResult);
+        } else {
+            throw new NullPointerException("Message service returned null!");
+        }
     }
 
 }
