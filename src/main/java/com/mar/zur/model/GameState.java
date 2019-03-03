@@ -1,86 +1,120 @@
 package com.mar.zur.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public class GameState {
+    private static final Logger logger = LoggerFactory.getLogger(GameState.class);
 
-    private String gameId;
-    private int lives;
-    private int gold;
-    private int level;
-    private int score;
-    private int highScore;
-    private int turn;
+    @Value("${score.range.betterItems}")
+    private int betterItemsScoreRange;
+    @Value("${score.range.simpleItems}")
+    private int simpleItemsScoreRange;
 
-    public String getGameId() {
-        return gameId;
+    private Game game;
+    private List<Message> currentMessages;
+    private List<ShopItem> shopItems;
+
+    public GameState(Game game, List<Message> currentMessages, List<ShopItem> shopItems) {
+        this.game = game;
+        this.currentMessages = currentMessages;
+        this.shopItems = shopItems;
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
+    public Game getGame() {
+        return game;
     }
 
-    public int getLives() {
-        return lives;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
-    public void setLives(int lives) {
-        this.lives = lives;
+    public List<Message> getCurrentMessages() {
+        return currentMessages;
     }
 
-    public int getGold() {
-        return gold;
+    public void setCurrentMessages(List<Message> currentMessages) {
+        this.currentMessages = currentMessages;
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
+    public List<ShopItem> getShopItems() {
+        return shopItems;
     }
 
-    public int getLevel() {
-        return level;
+    public void setShopItems(List<ShopItem> shopItems) {
+        this.shopItems = shopItems;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public int getBetterItemsScoreRange() {
+        return betterItemsScoreRange;
     }
 
-    public int getScore() {
-        return score;
+    public void setBetterItemsScoreRange(int betterItemsScoreRange) {
+        this.betterItemsScoreRange = betterItemsScoreRange;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public int getSimpleItemsScoreRange() {
+        return simpleItemsScoreRange;
     }
 
-    public int getHighScore() {
-        return highScore;
-    }
-
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
-    }
-
-    public int getTurn() {
-        return turn;
-    }
-
-    public void setTurn(int turn) {
-        this.turn = turn;
+    public void setSimpleItemsScoreRange(int simpleItemsScoreRange) {
+        this.simpleItemsScoreRange = simpleItemsScoreRange;
     }
 
     public boolean isGameOver() {
-        return lives == 0;
+        return getGame().getLives() == 0;
     }
 
-    @Override
-    public String toString() {
-        return  "Game id: '" + gameId + '\'' +
-                ", lives:" + lives +
-                ", gold:" + gold +
-                ", level:" + level +
-                ", score:" + score +
-                ", turns:" + turn;
+    public void executePostTurnActions(Response response) {
+        updateGameState(response);
+        decrementMessagesExpirationIndex();
+        removeExpiredMessages();
+    }
+
+    public Optional<ShopItem> getRandomItemOfGivenCost(int cost) {
+        return shopItems.stream().filter(item -> item.getCost() == cost).findFirst();
+    }
+
+    public boolean isRequiredOfBetterItems() {
+        return game.getScore() > getBetterItemsScoreRange();
+    }
+
+    public boolean isRequiredOfItems() {
+        return game.getScore() > getSimpleItemsScoreRange();
+    }
+
+    public boolean isEnoughGold(int itemCost) {
+        return game.getGold() > itemCost;
+    }
+
+    public boolean isOneLifeLeft() {
+        return game.getLives() == 1;
+    }
+
+    public void logGameResults() {
+        logger.info("--------------------------------------------------------------------");
+        logger.info("GAME OVER! You can see game statistics below.");
+        logger.info(getGame().toString());
+        logger.info("--------------------------------------------------------------------");
+    }
+
+    private void updateGameState(Response response) {
+        getGame().setGold(response.getGold());
+        getGame().setLives(response.getLives());
+        getGame().setTurn(response.getTurn());
+    }
+
+    private void removeExpiredMessages() {
+        currentMessages = currentMessages.stream().filter(Message::isMessageValid).collect(Collectors.toList());
+    }
+
+    private void decrementMessagesExpirationIndex() {
+        currentMessages.stream().forEach(Message::decrementExpiration);
     }
 
 }

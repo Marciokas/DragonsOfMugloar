@@ -1,6 +1,6 @@
 package com.mar.zur.service;
 
-import com.mar.zur.model.GameState;
+import com.mar.zur.model.Game;
 import com.mar.zur.service.impl.GameStarterServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,15 +37,15 @@ public class GameStarterServiceTest {
 
     @Test
     public void getNewGameState() {
-        GameState gameState = mock(GameState.class);
+        Game game = mock(Game.class);
 
-        Mockito.when(restTemplate.postForObject(getNewGameUrl(), null, GameState.class))
-                .thenReturn(gameState);
+        Mockito.when(restTemplate.postForObject(getNewGameUrl(), null, Game.class))
+                .thenReturn(game);
 
-        Optional<GameState> optServiceResult = gameStarterService.getNewGameState();
+        Optional<Game> optServiceResult = gameStarterService.getNewGameState();
         if (optServiceResult.isPresent()) {
-            GameState serviceResult = optServiceResult.get();
-            Assert.assertEquals(gameState, serviceResult);
+            Game serviceResult = optServiceResult.get();
+            Assert.assertEquals(game, serviceResult);
         } else {
             throw new NullPointerException("Game starter service returned null!");
         }

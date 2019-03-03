@@ -5,7 +5,7 @@ import com.mar.zur.strategy.MessagePicker;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class EqualProbabilityPicker implements MessagePicker {
 
@@ -18,11 +18,7 @@ public class EqualProbabilityPicker implements MessagePicker {
         if (StringUtils.isEmpty(probability)) {
             message = getMessageWithLowestReward(messages);
         } else {
-            try {
-                message = getMessageWithTheSameProbability(messages);
-            } catch (NoSuchElementException e) {
-                message = getMessageWithLowestReward(messages);
-            }
+            message = getMessageWithTheSameProbability(messages).orElse(getMessageWithLowestReward(messages));
         }
         probability = message.getProbability();
         return message;
@@ -32,10 +28,9 @@ public class EqualProbabilityPicker implements MessagePicker {
         return lowestRewardPicker.pickOneToSolve(messages);
     }
 
-    private Message getMessageWithTheSameProbability(List<Message> messages) {
+    private Optional<Message> getMessageWithTheSameProbability(List<Message> messages) {
         return messages.stream().filter(m -> probability.equals(m.getProbability()))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .findFirst();
     }
 
     public String getProbability() {

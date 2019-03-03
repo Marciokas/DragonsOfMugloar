@@ -1,6 +1,6 @@
 package com.mar.zur.service.impl;
 
-import com.mar.zur.model.GameState;
+import com.mar.zur.model.Game;
 import com.mar.zur.service.GameStarterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,9 @@ public class GameStarterServiceImpl implements GameStarterService {
     private String newGameUrl;
 
     @Override
-    public Optional<GameState> getNewGameState() {
+    public Optional<Game> getNewGameState() {
         try {
-            return Optional.of(restTemplate.postForObject(getNewGameUrl(), null, GameState.class));
+            return Optional.of(restTemplate.postForObject(getNewGameUrl(), null, Game.class));
         } catch (HttpClientErrorException e) {
             logger.error("Game starter service was unable to receive a response. Error received:{}", e.getMessage());
             return Optional.empty();
