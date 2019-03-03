@@ -10,6 +10,7 @@ import com.mar.zur.strategy.impl.EqualProbabilityPicker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,12 +23,19 @@ import java.util.stream.Collectors;
 public class GameProcessor {
     private static final Logger logger = LoggerFactory.getLogger(GameProcessor.class);
     private static final String HPOT_ID = "hpot";
-    private static final int HPOT_PRICE = 50;
-    private static final int GAMES_COUNT = 5;
-    private static final int NEED_BETTER_ITEMS_SCORE_RANGE = 1500;
-    private static final int NEED_ITEMS_SCORE_RANGE = 1000;
-    private static final int BETTER_ITEMS_COST = 300;
-    private static final int SIMPLE_ITEMS_COST = 100;
+
+    @Value("${game.retry.count}")
+    private int gameRetryCount;
+    @Value("${shop.items.cost.hpot}")
+    private int hpotCost;
+    @Value("${shop.items.cost.simpleItems}")
+    private int simpleItemsCost;
+    @Value("${shop.items.cost.betterItems}")
+    private int betterItemsCost;
+    @Value("${score.range.betterItems}")
+    private int betterItemsScoreRange;
+    @Value("${score.range.simpleItems}")
+    private int simpleItemsScoreRange;
 
     @Autowired
     private GameStarterService gameStarterService;
@@ -44,7 +52,7 @@ public class GameProcessor {
 
     @PostConstruct
     public void init() {
-        playGameSeveralTimes(GAMES_COUNT);
+        playGameSeveralTimes(getGameRetryCount());
     }
 
     private void playGameSeveralTimes(int times) {
@@ -99,13 +107,13 @@ public class GameProcessor {
 
     private void enterTheShop() {
         if (isOneLifeLeft()) {
-            buyItem(HPOT_ID, HPOT_PRICE);
+            buyItem(HPOT_ID, getHpotCost());
         } else {
             if (isRequiredOfBetterItems()) {
-                buyItemToLevelUp(BETTER_ITEMS_COST);
+                buyItemToLevelUp(getBetterItemsCost());
             }
             if (isRequiredOfItems()) {
-                buyItemToLevelUp(SIMPLE_ITEMS_COST);
+                buyItemToLevelUp(getSimpleItemsCost());
             }
         }
     }
@@ -169,11 +177,11 @@ public class GameProcessor {
     }
 
     private boolean isRequiredOfBetterItems() {
-        return gameState.getScore() > NEED_BETTER_ITEMS_SCORE_RANGE;
+        return gameState.getScore() > getBetterItemsScoreRange();
     }
 
     private boolean isRequiredOfItems() {
-        return gameState.getScore() > NEED_ITEMS_SCORE_RANGE;
+        return gameState.getScore() > getSimpleItemsScoreRange();
     }
 
     private boolean isEnoughGold(int itemCost) {
@@ -231,5 +239,53 @@ public class GameProcessor {
 
     public void setShopItems(List<ShopItem> shopItems) {
         this.shopItems = shopItems;
+    }
+
+    public int getGameRetryCount() {
+        return gameRetryCount;
+    }
+
+    public void setGameRetryCount(int gameRetryCount) {
+        this.gameRetryCount = gameRetryCount;
+    }
+
+    public int getHpotCost() {
+        return hpotCost;
+    }
+
+    public void setHpotCost(int hpotCost) {
+        this.hpotCost = hpotCost;
+    }
+
+    public int getSimpleItemsCost() {
+        return simpleItemsCost;
+    }
+
+    public void setSimpleItemsCost(int simpleItemsCost) {
+        this.simpleItemsCost = simpleItemsCost;
+    }
+
+    public int getBetterItemsCost() {
+        return betterItemsCost;
+    }
+
+    public void setBetterItemsCost(int betterItemsCost) {
+        this.betterItemsCost = betterItemsCost;
+    }
+
+    public int getBetterItemsScoreRange() {
+        return betterItemsScoreRange;
+    }
+
+    public void setBetterItemsScoreRange(int betterItemsScoreRange) {
+        this.betterItemsScoreRange = betterItemsScoreRange;
+    }
+
+    public int getSimpleItemsScoreRange() {
+        return simpleItemsScoreRange;
+    }
+
+    public void setSimpleItemsScoreRange(int simpleItemsScoreRange) {
+        this.simpleItemsScoreRange = simpleItemsScoreRange;
     }
 }
