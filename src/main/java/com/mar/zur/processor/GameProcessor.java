@@ -20,6 +20,8 @@ public class GameProcessor {
 
     @Value("${game.retry.count}")
     private int gameRetryCount;
+    @Value("${shop.processor.enabled}")
+    private boolean shopProcessorEnabled;
 
     @Autowired
     private GameStarterService gameStarterService;
@@ -83,7 +85,9 @@ public class GameProcessor {
             } else {
                 MessageSolvingResponse solvingResponse = optSolvingResponse.get();
                 executePostTurnActions(gameState, solvingResponse);
-                shopProcessor.enterTheShop(gameState);
+                if (shopProcessorEnabled) {
+                    shopProcessor.enterTheShop(gameState);
+                }
             }
             recursiveSolving(gameState, picker);
         }
@@ -123,5 +127,13 @@ public class GameProcessor {
 
     public void setGameRetryCount(int gameRetryCount) {
         this.gameRetryCount = gameRetryCount;
+    }
+
+    public boolean isShopProcessorEnabled() {
+        return shopProcessorEnabled;
+    }
+
+    public void setShopProcessorEnabled(boolean shopProcessorEnabled) {
+        this.shopProcessorEnabled = shopProcessorEnabled;
     }
 }

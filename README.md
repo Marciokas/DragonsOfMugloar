@@ -26,7 +26,7 @@ Open **target** directory and run
 
 ```java -jar dragonsofmugloar-1.0.0-SNAPSHOT.jar```
 
-This will initiate 5 games to be played. Every game result will be logged in the console
+This will initiate 10 (default) games to be played. Every game result will be logged in the console
 
 If you want you can specify retry games counter in application.properties by changing the property: game.retry.count
 
